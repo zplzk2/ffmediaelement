@@ -111,7 +111,20 @@
 
             // Create the options object
             Logger = logger;
-            MediaUrl = mediaUrl;
+            Uri uri = new Uri(mediaUrl); // Sample: decklink://2/ntsc/
+            if (uri.Scheme == "decklink")
+            {
+                MediaUrl = $"DeckLink SDI ({uri.Host})";
+                MediaOptions.ForcedInputFormat = "decklink";
+                if (uri.Segments.Length >= 2)
+                    MediaOptions.FormatOptions.Add("format_code", uri.Segments[1]);
+                else
+                    MediaOptions.FormatOptions.Add("format_code", "ntsc");
+            }
+            else
+            {
+                MediaUrl = mediaUrl;
+            }
 
             // drop the protocol prefix if it is redundant
             if (string.IsNullOrWhiteSpace(MediaUrl) == false && string.IsNullOrWhiteSpace(protocolPrefix) == false

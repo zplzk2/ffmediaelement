@@ -22,7 +22,7 @@
         }
 
         public string Version { get; set; } = typeof(ConfigRoot).Assembly.GetName().Version.ToString();
-        public string FFmpegPath { get; set; } = @"C:\ffmpeg\";
+        public string FFmpegPath { get; set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg");
         public List<string> HistoryEntries { get; set; } = new List<string>();
 
         public static ConfigRoot Load()
