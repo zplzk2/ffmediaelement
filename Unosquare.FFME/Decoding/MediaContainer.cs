@@ -2,12 +2,14 @@
 {
     using Core;
     using FFmpeg.AutoGen;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading;
+    using YoutubeExtractor;
 
     /// <summary>
     /// A container capable of opening an input url,
@@ -120,6 +122,20 @@
                     MediaOptions.FormatOptions.Add("format_code", uri.Segments[1]);
                 else
                     MediaOptions.FormatOptions.Add("format_code", "ntsc");
+            }
+            else if (uri.Host.StartsWith("www.youtube.com"))
+            {
+                IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(mediaUrl);
+                VideoInfo first = videoInfos.FirstOrDefault();
+                if (first != null)
+                {
+                    MediaUrl = first.DownloadUrl;
+                    string candidateInfo = JsonConvert.SerializeObject(first);
+                }
+                else
+                {
+                    MediaUrl = mediaUrl;
+                }
             }
             else
             {
